@@ -1,0 +1,81 @@
+
+let TXCuoc    = require('../../Models/TaiXiu_cuoc');
+let TXCuocOne = require('../../Models/TaiXiu_one');
+
+/**
+ * Ngẫu nhiên cược
+ * return {number}
+*/
+let random = function(){
+	let a = (Math.random()*85)>>0;
+	if (a == 85) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*1200000;
+	}else if (a >= 77 && a < 84) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*900000;
+	}else if (a >= 69 && a < 77) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*700000;		
+	}else if (a >= 60 && a < 69) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*500000;
+	}else if (a >= 52 && a < 60) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*400000;
+	}else if (a >= 45 && a < 52) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*150000;
+	}else if (a >= 38 && a < 45) {
+		//34 35
+		return (Math.floor(Math.random()*(20-3+1))+3)*100000;
+	}else if (a >= 32 && a < 38) {
+		// 32 33
+		return (Math.floor(Math.random()*(20-5+1))+5)*10000;
+	}else if (a >= 30 && a < 32) {
+		// 30 31 32
+		return (Math.floor(Math.random()*(20-10+1))+10)*10000;
+	}else if (a >= 26 && a < 30) {
+		// 26 27 28 29
+		return (Math.floor(Math.random()*(10-10+1))+10)*10000;
+	}else if (a >= 21 && a < 26) {
+		// 21 22 23 24 25
+		return (Math.floor(Math.random()*(10-10+1))+10)*10000;
+	}else if (a >= 15 && a < 21) {
+		// 15 16 17 18 19 20
+		return (Math.floor(Math.random()*(10-5+1))+5)*100000;
+	}else if (a >= 8 && a < 15) {
+		// 8 9 10 11 12 13 14
+		return (Math.floor(Math.random()*(7-2+1))+2)*100000;
+	}else{
+		// 0 1 2 3 4 5 6 7
+		return (Math.floor(Math.random()*(100-10+1))+10)*10000;
+	}
+};
+
+/**
+ * Cược
+*/
+// Tài Xỉu RED
+let tx = function(bot, io){
+	let cuoc   = random();
+	cuoc = 30 * cuoc / 12;
+	let select = !!((Math.random()*2)>>0);
+	let fakeplayer = (Math.random() * 50) + 1;
+	if (select) {
+		io.taixiu.taixiu.red_tai        += cuoc;
+		io.taixiu.taixiu.red_player_tai += fakeplayer;
+	}else{
+		io.taixiu.taixiu.red_xiu        += cuoc;
+		io.taixiu.taixiu.red_player_xiu += fakeplayer;
+	}
+	TXCuocOne.create({uid:bot.id, phien:io.TaiXiu_phien, select:select, bet:cuoc});
+	TXCuoc.create({uid:bot.id, bot: true, name:bot.name, phien:io.TaiXiu_phien, bet:cuoc, select:select, time:new Date()});
+	bot = null;
+	io = null;
+	cuoc   = null;
+	select = null;
+};
+module.exports = {
+	tx: tx
+}
